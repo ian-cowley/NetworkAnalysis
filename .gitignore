@@ -53,3 +53,4 @@ sslkeys.log
 *.pcap
 *.pcapng
 TempBrowserProfile/
+publish/
