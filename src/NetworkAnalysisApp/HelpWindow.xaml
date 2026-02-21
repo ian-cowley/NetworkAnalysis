@@ -1,0 +1,51 @@
+<Window x:Class="NetworkAnalysisApp.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Network Analysis App - User Guide" Height="600" Width="800" WindowStartupLocation="CenterOwner">
+    <ScrollViewer Padding="20">
+        <StackPanel>
+            <TextBlock Text="Network Analysis App User Guide" FontSize="28" FontWeight="Bold" Margin="0,0,0,10" Foreground="#005A9E"/>
+            <TextBlock Text="Welcome to the simplified, native Windows alternative to Wireshark built in C#. This guide covers everything you need to know to capture, filter, and dissect network traffic." TextWrapping="Wrap" Margin="0,0,0,20"/>
+
+            <TextBlock Text="1. Getting Started" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                <Run FontWeight="Bold">Prerequisites:</Run> To capture raw packets on Windows, you must have <Run FontStyle="Italic">Npcap</Run> installed (usually bundled with Wireshark) and you must run this application with Administrator privileges.<LineBreak/>
+                <Run FontWeight="Bold">Capture Interface:</Run> Choose your active network adapter (e.g., Wi-Fi or Ethernet) from the "Interface" dropdown at the top left.<LineBreak/>
+                <Run FontWeight="Bold">Start/Stop:</Run> Click the "▶ Start" button to begin listening to traffic. Click "⏹ Stop" to halt the capture.
+            </TextBlock>
+
+            <TextBlock Text="2. Filtering Traffic" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                <Run FontWeight="Bold">IP Filters:</Run> Enter an IP address in "Src IP" or "Dst IP" to only capture packets originating from or going to those addresses.<LineBreak/>
+                <Run FontWeight="Bold">Protocols dropdown:</Run> Check the boxes for TCP, UDP, ICMP, etc., to strictly filter traffic types. You can click "Edit..." to add custom ports or advanced filters (like "port 443" or "port 80").<LineBreak/>
+                <Run FontWeight="Bold">Other Filters (BPF):</Run> Use standard Wireshark capture filters (Berkeley Packet Filter syntax) here. Example: <Run FontFamily="Consolas">tcp port 443 and host 192.168.1.5</Run>. Type your filter and hit Start.
+            </TextBlock>
+
+            <TextBlock Text="3. Power-User Features" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                <Run FontWeight="Bold">💾 Save / 📂 Open (PCAP format):</Run> Export your live captures to standard `.pcap` files, which are natively compatible with Wireshark. You can also click Open to read offline .pcap files into the DataGrid.
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                <Run FontWeight="Bold">🔎 Payload Search:</Run> Want to find a specific text string (like "HTTP" or a password) inside thousands of packets? Type it into the "Search Payload" box, and the grid will instantly filter to only display packets containing that ASCII string.
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                <Run FontWeight="Bold">📜 Auto-Scroll:</Run> Toggle this on to automatically snap your view to the bottom of the list when thousands of packets are rushing in.
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                <Run FontWeight="Bold">🌐 DNS Reverse Lookup:</Run> The Source and Destination columns dynamically lookup IPs and resolve them to real domain domains (e.g., `google.com`) safely in the background. Hover your mouse over the cell to see the original IP!
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                <Run FontWeight="Bold">📊 Traffic Dashboard:</Run> Click the Dashboard button to visualize total traffic throughput via a live progress-bar chart separated by protocol.
+            </TextBlock>
+
+            <TextBlock Text="4. Deep Packet Inspection &amp; SSL Decryption" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                <Run FontWeight="Bold">Conversation Highlighting:</Run> Click on any packet row. Every other packet in that exact conversation (matching Source/Dest IPs and Ports in both directions) will instantly turn Light Yellow so you can track the full lifecycle.<LineBreak/><LineBreak/>
+                <Run FontWeight="Bold">Application Layer Decoding:</Run> The "Info" column automatically parses HTTP verbs (<Run FontFamily="Consolas">GET /</Run>), DNS Domains (<Run FontFamily="Consolas">Query reddit.com</Run>), and encrypted HTTPS SNI strings (<Run FontFamily="Consolas">Client Hello (SNI: bank.com)</Run>).<LineBreak/><LineBreak/>
+                <Run FontWeight="Bold">Packet Inspector:</Run> Click a packet to view its raw payload dumped in strict Hexadecimal and plain ASCII Text in the bottom window pane.<LineBreak/><LineBreak/>
+                <Run FontWeight="Bold" Foreground="DarkRed">🌐 SSL Browser Launch (The Cheat Code):</Run> Modern internet traffic is fully encrypted via TLS Perfect Forward Secrecy. To inspect HTTPS payloads, you must dump the ephemeral session keys to your hard drive. Click this button to launch a specially-configured browser instance that forces Chrome to save its session keys to <Run FontFamily="Consolas">C:\temp\sslkeys.log</Run>. You can export a `.pcap` from this app and supply the `.log` key file to Wireshark to fully decrypt your HTTPS traffic! (Configure Paths in <Run FontFamily="Consolas">appconfig.json</Run>).
+            </TextBlock>
+
+        </StackPanel>
+    </ScrollViewer>
+</Window>

@@ -1,0 +1,32 @@
+<Window x:Class="NetworkAnalysisApp.ProtocolMaintenanceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Protocol Maintenance" Height="300" Width="300"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <ListBox ItemsSource="{Binding Protocols}" Grid.Row="0" x:Name="ProtocolList">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Width="240">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                        <!-- Deletion could be handled here if needed -->
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0">
+            <TextBox x:Name="NewProtocolTextBox" Width="180" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
+            <Button Content="Add" Width="60" Click="AddButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

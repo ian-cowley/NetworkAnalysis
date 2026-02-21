@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NetworkAnalysisApp/NetworkAnalysisApp.csproj" />
+  </Folder>
+  <Folder Name="/src/TlsDecryptionEngine/">
+    <Project Path="src/TlsDecryptionEngine/TlsDecryptionEngine/TlsDecryptionEngine.csproj" />
+  </Folder>
+</Solution>

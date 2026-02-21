@@ -1,0 +1,55 @@
+## Supported Visual Studio ignore file
+# See https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
+# Mono auto generated files
+mono_crash.*
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio 2015/2017/2019/2022 cache/options directory
+.vs/
+
+# Mac / Unix system files
+.DS_Store
+*.swp
+
+# Profile cache
+*.prof
+
+# Nuget
+*.nuget.props
+*.nuget.targets
+packages/
+
+# Temp files
+*.tmp
+
+# App specific
+sslkeys.log
+*.pcap
+*.pcapng
+TempBrowserProfile/
