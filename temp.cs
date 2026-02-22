@@ -1,0 +1,1 @@
+using System; using System.Reflection; class P { static void Main() { foreach(var m in typeof(Microsoft.ML.OnnxRuntimeGenAI.GeneratorParams).GetMethods()) Console.WriteLine(m.Name); Console.WriteLine("---"); foreach(var m in typeof(Microsoft.ML.OnnxRuntimeGenAI.Generator).GetMethods()) Console.WriteLine(m.Name); } }

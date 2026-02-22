@@ -15,6 +15,7 @@ namespace NetworkAnalysisApp.ViewModels
         private readonly DnsResolverService _dnsResolver;
         private readonly SettingsService _settingsService;
         private readonly LiveTlsDecryptionService _tlsService;
+        private readonly AiAnalystService _aiService;
         private readonly Dispatcher _uiDispatcher;
 
         public AppConfig Config { get; private set; }
@@ -48,6 +49,8 @@ namespace NetworkAnalysisApp.ViewModels
                     HighlightConversation(value);
                     OnPropertyChanged(nameof(SelectedPacketHex));
                     OnPropertyChanged(nameof(SelectedPacketText));
+                    OnPropertyChanged(nameof(CanAnalyzePayload));
+                    AiAnalysisText = string.Empty; // Clear previous analysis
                 }
             }
         }
@@ -163,12 +166,35 @@ namespace NetworkAnalysisApp.ViewModels
             set => SetProperty(ref _totalPacketsCaptured, value);
         }
 
+        private bool _isAiAnalyzing;
+        public bool IsAiAnalyzing
+        {
+            get => _isAiAnalyzing;
+            set
+            {
+                if (SetProperty(ref _isAiAnalyzing, value))
+                {
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
+        }
+
+        private string _aiAnalysisText = string.Empty;
+        public string AiAnalysisText
+        {
+            get => _aiAnalysisText;
+            set => SetProperty(ref _aiAnalysisText, value);
+        }
+        
+        public bool CanAnalyzePayload => SelectedPacket?.DecryptedPayload != null && SelectedPacket.DecryptedPayload.Length > 0 && !IsAiAnalyzing;
+
         public ICommand StartCaptureCommand { get; }
         public ICommand StopCaptureCommand { get; }
         public ICommand ClearPacketsCommand { get; }
         public ICommand OpenFileCommand { get; }
         public ICommand SaveFileCommand { get; }
         public ICommand LaunchBrowserCommand { get; }
+        public ICommand AnalyzePayloadCommand { get; }
 
         public MainViewModel()
         {
@@ -180,6 +206,7 @@ namespace NetworkAnalysisApp.ViewModels
             Config = _settingsService.LoadConfig();
             
             _tlsService = new LiveTlsDecryptionService(Config.SslKeyLogPath);
+            _aiService = new AiAnalystService(Config);
 
             _captureService.OnPacketCaptured += CaptureService_OnPacketCaptured;
             _captureService.OnCaptureError += CaptureService_OnCaptureError;
@@ -191,6 +218,7 @@ namespace NetworkAnalysisApp.ViewModels
             OpenFileCommand = new RelayCommand(_ => OpenFile(), _ => !IsCapturing);
             SaveFileCommand = new RelayCommand(_ => SaveFile(), _ => Packets.Count > 0 && !IsCapturing);
             LaunchBrowserCommand = new RelayCommand(_ => LaunchBrowser());
+            AnalyzePayloadCommand = new RelayCommand(_ => AnalyzePayloadAsync(), _ => CanAnalyzePayload);
 
             PacketsView = System.Windows.Data.CollectionViewSource.GetDefaultView(Packets);
             PacketsView.Filter = SearchFilter;
@@ -468,6 +496,59 @@ namespace NetworkAnalysisApp.ViewModels
                     Packets.RemoveAt(0);
                 }
             }, DispatcherPriority.Background);
+        }
+
+        private async void AnalyzePayloadAsync()
+        {
+            if (SelectedPacket?.DecryptedPayload == null || SelectedPacket.DecryptedPayload.Length == 0) return;
+
+            IsAiAnalyzing = true;
+            AiAnalysisText = "Initializing local AI Engine... (This may take a moment to load the model into RAM)\n\n";
+
+            try
+            {
+                // We're converting the byte array payload into a string to show the LLM. 
+                // We assume it's UTF8/ASCII text (like HTTP headers or JSON).
+                string textPayload = System.Text.Encoding.UTF8.GetString(SelectedPacket.DecryptedPayload);
+
+                // Sanity check to prevent sending raw binary or compressed gzip streams to the text-based LLM
+                int replacementCount = 0;
+                foreach (char c in textPayload) if (c == '\uFFFD') replacementCount++;
+                
+                if (textPayload.Length > 0 && (replacementCount / (double)textPayload.Length) >= 0.05)
+                {
+                    _uiDispatcher.Invoke(() =>
+                    {
+                        AiAnalysisText = "⚠️ This packet's payload appears to be mostly binary data or compressed (e.g. GZIP, Image, Video).\n\nThe AI Analyst only reads human-readable plaintext protocols like HTTP, JSON, or DNS.\n\nPlease select a packet that has readable text inside the 'Text View' tab and try again.";
+                    });
+                    return;
+                }
+
+                // Strip any remaining replacement characters or control chars to prevent the tokenizer from outputting infinite UNK tokens ()
+                textPayload = textPayload.Replace("\uFFFD", "");
+
+                await foreach (var token in _aiService.AnalyzePayloadAsync(textPayload))
+                {
+                    _uiDispatcher.Invoke(() =>
+                    {
+                        AiAnalysisText += token;
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                _uiDispatcher.Invoke(() =>
+                {
+                    AiAnalysisText += $"\n\n[ERROR]: {ex.Message}\nMake sure your model path in settings is correct.";
+                });
+            }
+            finally
+            {
+                _uiDispatcher.Invoke(() =>
+                {
+                    IsAiAnalyzing = false;
+                });
+            }
         }
 
         private void CaptureService_OnCaptureError(object? sender, string errorMessage)

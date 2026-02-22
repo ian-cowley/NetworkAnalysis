@@ -6,6 +6,7 @@ A powerful, native Windows application written in C# and WPF for capturing, anal
 
 - **Live Packet Capture**: Intercept and visualize live traffic using WinPcap/Npcap.
 - **TLS 1.3 Decryption**: Native `TlsDecryptionEngine` that reassembles TCP streams, parses TLS records, and uses HKDF and AES-GCM to decrypt payloads on the fly using standard `SSLKEYLOGFILE` formats.
+- **Offline AI Analyst**: Built-in HTTP payload summarization powered by `Microsoft.ML.OnnxRuntimeGenAI`. It runs quantized LLMs (like Phi-3 or Llama-3) locally with full hardware acceleration via DirectML.
 - **Traffic Slicing & Filtering**: Supports standard BPF syntax filtering (e.g. `port 443`) and bidirectional tracking.
 - **Decrypted Payload Visualization**: Built-in hex viewer and text viewer for inspecting decrypted HTTP requests and headers.
 - **Smart History**: Persents previously used IPs and BPF filters for quick access.

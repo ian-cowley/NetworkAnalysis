@@ -183,6 +183,47 @@
                 
                 <!-- Hex Dump and ASCII Text Tabs -->
                 <TabControl Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding SelectedPacket, Converter={StaticResource NullToVisibilityConverter}}">
+                    <!-- AI Analyst Tab -->
+                    <TabItem Header="✨ AI Analyst">
+                        <Grid Background="{DynamicResource ControlBackgroundBrush}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+                                <Button Command="{Binding AnalyzePayloadCommand}" 
+                                        Content="Analyze Payload" 
+                                        Padding="15,5" 
+                                        FontWeight="Bold" 
+                                        Background="#FFE0FFE0"/>
+                                <TextBlock Text="⏳ Analyzing..." 
+                                           VerticalAlignment="Center" 
+                                           Margin="10,0,0,0" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="DarkGoldenrod"
+                                           Visibility="{Binding IsAiAnalyzing, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <TextBlock Text="Select a decrypted packet to analyze." 
+                                           VerticalAlignment="Center" 
+                                           Margin="10,0,0,0" 
+                                           FontStyle="Italic"
+                                           Visibility="{Binding CanAnalyzePayload, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                            </StackPanel>
+
+                            <TextBox Grid.Row="1" 
+                                     Text="{Binding AiAnalysisText, Mode=OneWay}" 
+                                     FontFamily="Segoe UI" 
+                                     FontSize="14"
+                                     TextWrapping="Wrap" 
+                                     AcceptsReturn="True" 
+                                     IsReadOnly="True" 
+                                     Margin="5"
+                                     BorderBrush="{DynamicResource ControlBorderBrush}"
+                                     Background="{DynamicResource ControlBackgroundBrush}"
+                                     Foreground="{DynamicResource ForegroundBrush}"/>
+                        </Grid>
+                    </TabItem>
+
                     <TabItem Header="Hex View">
                         <TextBox Text="{Binding SelectedPacketHex, Mode=OneWay}" 
                                  FontFamily="Consolas" 

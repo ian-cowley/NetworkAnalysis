@@ -5,6 +5,9 @@
              xmlns:converters="clr-namespace:NetworkAnalysisApp.Converters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+        
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     </Application.Resources>
