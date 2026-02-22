@@ -22,6 +22,7 @@ The project is split into two primary components:
 - .NET 8.0 SDK (or later)
 - WinPcap, Npcap, or Wireshark installed (for driver support)
 - Google Chrome or Microsoft Edge (for generating active `SSLKEYLOGFILE` keys via the UI)
+- To use the **AI Analyst**, you must manually download an ONNX-formatted local LLM directory (like `Phi-3-mini-4k-instruct-onnx`'s `directml` int4 folder) from HuggingFace and configure its path in Settings.
 
 ## Getting Started
 
